@@ -1,0 +1,7 @@
+# dependencies of the kivy_sideloading portion
+ae_files
+ae_i18n
+ae_gui_app
+ae_kivy_app
+ae_sideloading_server
+
