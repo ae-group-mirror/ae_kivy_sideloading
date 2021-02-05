@@ -1,7 +1,9 @@
 # dependencies of the kivy_sideloading portion
 ae_files
 ae_i18n
+ae_sideloading_server
 ae_gui_app
 ae_kivy_app
-ae_sideloading_server
-
+ae_kivy_file_chooser
+ae_kivy_iterable_displayer
+ae_kivy_qr_displayer
