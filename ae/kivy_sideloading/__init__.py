@@ -20,23 +20,18 @@ the :attr:`~SideloadingMainAppMixin.sideloading_app` attribute with this sub app
     If you prefer to instantiate the sideloading server sub app manually then specify :class:`SideloadingMainAppMixin`
     after :class:`~ae.kivy_app.KivyMainApp` in the declaration of your main app class.
 
-For to activate the sideloading server specify the path (or glob file mask) of the file to be available via sideloading
-in the :attr:`~SideloadingMainAppMixin.sideloading_file_mask` attribute and then call the method
-:meth:`~SideloadingMainAppMixin.on_sideloading_server_start`. This method will check if the specified file exists and if
-yes then it will start the sideloading server. If you specify a file mask instead of a concrete file path then this
-method will check if exists exactly one file matching the file mask.
+Adding a boolean `sideloading_active` to the `:ref:`app state variables` of your app will ensure that the running status
+of the sideloading server gets automatically stored persistent on paus or stop of the app for the next next app run.
 
-After the start of the sideloading server the :attr:`~SideloadingMainAppMixin.sideloading_file_ext` attribute will
-contain the file extension of the file available via sideloading.
+For to automatically start the sideloading server to offer the APK of the embedding app you simply add the following
+lines in one of the application startup event handler (e.g. main_app.on_app_start)::
 
-You can stop the sideloading server by calling the :meth:`~SideloadingMainAppMixin.on_sideloading_server_stop` method.
-
-A boolean `sideloading_active` added to the `:ref:`app state variables` of your app will ensure that the sideloading
-server gets automatically restarted on the next app run if it was active in the previous app run.
+    if self.sideloading_active:
+        self.on_sideloading_server_start("", dict())
 
 
 usage of the sideloading button
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This ae namespace portion is additionally providing the `SideloadingButton` flow button widget for to integrate it in
 your Kivy app. This button can be used for to:
@@ -61,6 +56,50 @@ sideloading server will be started providing the found APK file.
 If the sideloading server is instead already running/active and the user is tapping on the `SideloadingButton` then a
 drop down menu will be shown with options for to (1) display info of the sideloading file, (2) select a new file, (3)
 display the sideloading server URL as QR code or (4) stop the sideloading server.
+
+
+dependencies/requirements in buildozer.spec
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For to build a Android APK with the kivy sideloading server integrated, make sure that the following external packages
+are specified in the `requirements` setting of the `[app]` section of your buildozer.spec file.
+
+* ae.kivy_file_chooser
+* ae.kivy_iterable_displayer
+* ae.kivy_qr_displayer
+* ae.kivy_sideloading
+* ae.sideloading_server
+* kivy_garden.qrcode
+* qrcode
+
+Additionally all the packages and ae namespace portions required by the above packages have to be included. E.g. the
+`GlslTester demo app <https://gibhub.com/AndiEcker/GlslTester>`_ includes the following packages::
+
+requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
+    plyer, qrcode, kivy_garden.qrcode,
+    ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.inspector, ae.i18n,
+    ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
+    ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi, ae.kivy_help,
+    ae.kivy_relief_canvas, ae.kivy_app, ae.kivy_user_prefs, ae.kivy_glsl,
+    ae.kivy_file_chooser, ae.sideloading_server, ae.kivy_sideloading,
+    ae.kivy_iterable_displayer, ae.kivy_qr_displayer
+
+
+sideloading server life cycle
+-----------------------------
+
+For to activate the sideloading server to offer a different file, specify the path (or glob file mask) of the file to be
+offered/available via sideloading in the :attr:`~SideloadingMainAppMixin.sideloading_file_mask` attribute and then call
+the method :meth:`~SideloadingMainAppMixin.on_sideloading_server_start`. This method will check if the specified file
+exists and if yes then it will start the sideloading server. If you specify a file mask instead of a concrete file path
+then this method will check if exists exactly one file matching the file mask.
+
+After the start of the sideloading server the :attr:`~SideloadingMainAppMixin.sideloading_file_ext` attribute will
+contain the file extension of the file available via sideloading.
+
+The sideloading server will automatically be shut down on quit/close of the embedding app. You can alternatively stop
+the sideloading server manually at any time by calling the :meth:`~SideloadingMainAppMixin.on_sideloading_server_stop`
+method.
 """
 import os
 
@@ -77,7 +116,7 @@ from ae.kivy_app import FlowDropDown, get_txt                                   
 from ae.sideloading_server import DEFAULT_FILE_MASK, server_factory, SideloadingServerApp       # type: ignore
 
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 
 register_package_images()

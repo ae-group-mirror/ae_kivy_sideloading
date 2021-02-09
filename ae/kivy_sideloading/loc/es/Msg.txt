@@ -1,4 +1,23 @@
 {
+"help_flow#open_file_chooser": """\
+puntea para abrir el
+selector de ficheros.""",
+"help_flow#open_iterable_displayer": """\
+puntea para mostrar
+información detallada.""",
+"help_flow#open_qr_displayer": """\
+puntea para mostrar
+el código QR.""",
+"help_flow#open_sideloading_menu": """\
+puntea para abrir el menu del servidor
+de carga lateral (sideloading).""",
+"help_flow#start_sideloading_server": """\
+puntea para arrancar el servidor
+de carga lateral (sideloading).""",
+"help_flow#start_sideloading_server":  """\
+puntea para detener el servidor
+de carga lateral (sideloading).""",
+#==================================
 "display QR code for browser/QR-code-reader": "mostrar código de QR para navigador/lector de código QR",
 "folders can't be send via sideloading": "no se puede seleccionar carpetas para carga lateral (sideloading)",
 "select file for sideloading": "seleccionar fichero para carga lateral",
