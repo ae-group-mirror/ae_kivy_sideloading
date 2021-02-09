@@ -77,7 +77,7 @@ from ae.kivy_app import FlowDropDown, get_txt                                   
 from ae.sideloading_server import DEFAULT_FILE_MASK, server_factory, SideloadingServerApp       # type: ignore
 
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 
 register_package_images()
@@ -209,7 +209,7 @@ class SideloadingMainAppMixin:
         chooser_popup.dismiss()
 
     def on_sideloading_server_start(self, _flow_key: str, event_kwargs: EventKwargsType) -> bool:
-        """ toggle between display and hide of tool box.
+        """ start the sideloading server.
 
         :param _flow_key:       unused/empty flow key.
         :param event_kwargs:    event kwargs.
@@ -237,7 +237,7 @@ class SideloadingMainAppMixin:
         return True
 
     def on_sideloading_server_stop(self, _flow_key: str, _event_kwargs: EventKwargsType) -> bool:
-        """ toggle between display and hide of tool box.
+        """ stop a running sideloading http server.
 
         :param _flow_key:       unused/empty flow key.
         :param _event_kwargs:   unused event kwargs.
