@@ -20,15 +20,22 @@ the :attr:`~SideloadingMainAppMixin.sideloading_app` attribute with this sub app
     If you prefer to instantiate the sideloading server sub app manually then specify :class:`SideloadingMainAppMixin`
     after :class:`~ae.kivy_app.KivyMainApp` in the declaration of your main app class.
 
-Adding a boolean `sideloading_active` to the `:ref:`app state variables` of your app will ensure that the running status
-of the sideloading server gets automatically stored persistent on paus or stop of the app for the next next app run.
+Adding `sideloading_active` to the `:ref:`app state variables` of your app's :ref:`config files` will ensure that the
+running status of the sideloading server gets automatically stored persistent on pause or stop of the app for the next
+app start.
 
-For to automatically start the sideloading server to offer the APK of the embedding app you simply add the following
-lines in one of the application startup event handler (e.g. main_app.on_app_start)::
+The running status of the sideloading server will be restored in the app start event handler method
+(:meth:`~SideloadingMainAppMixin.on_app_start).
 
-    if self.sideloading_active:
-        self.on_sideloading_server_start("", dict())
+To manually start it to offer the APK of the embedding app call the
+:meth:`#SideloadingMainAppMixin.on_sideloading_server_start` method passing an empty string and dict::
 
+    self.on_sideloading_server_start("", dict())
+
+To manually pause the sideloading server call the
+:meth:`#SideloadingMainAppMixin.on_sideloading_server_stop` method passing an empty string and dict::
+
+    self.on_sideloading_server_start("", dict())
 
 usage of the sideloading button
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -113,10 +120,11 @@ from ae.files import file_transfer_progress                                     
 from ae.i18n import register_package_translations                                               # type: ignore
 from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
-from ae.sideloading_server import DEFAULT_FILE_MASK, server_factory, SideloadingServerApp       # type: ignore
+from ae.sideloading_server import (                                                             # type: ignore
+    DEFAULT_FILE_MASK, server_factory, update_handler_progress, SideloadingServerApp)
 
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 
 register_package_images()
@@ -143,6 +151,13 @@ Builder.load_string('''\
         app.app_states['light_theme'])
     size_hint_x: None
     width: self.height * (3.3 if app.landscape else 2.1)
+    _progress: app.app_states['sideloading_active']
+    ellipse_fill_ink: app.font_color[:3] + (0.69, )
+    ellipse_fill_pos: self.x, self.top - app.app_states['font_size'] / 3.0
+    ellipse_fill_size: self.width * (self._progress and self._progress[0] or 0), app.app_states['font_size'] / 3.0
+    square_fill_ink: app.font_color[:3] + (0.69, )
+    square_fill_pos: self.pos
+    square_fill_size: self.width * (self._progress and self._progress[1] or 0), app.app_states['font_size'] / 3.0
     relief_square_inner_colors:
         relief_colors((1.0, 1.0, 0.3) if app.app_states['sideloading_active'] else (1.0, 1.0, 1.0))
     relief_square_inner_lines: int(self.height / (3.6 if app.app_states['sideloading_active'] else 2.1))
@@ -202,6 +217,7 @@ class SideloadingMainAppMixin:
     # abstract attributes/properties and methods
     change_app_state: Callable
     change_flow: Callable
+    dpo: Callable
     framework_root: Widget
     show_message: Callable
     vpo: Callable
@@ -209,7 +225,7 @@ class SideloadingMainAppMixin:
     # implemented attributes
     file_chooser_paths: List[str]                       #: file paths initially created from ae.paths.PATH_PLACEHOLDERS
 
-    sideloading_active: bool                            #: app state flag if sideloading server is running
+    sideloading_active: tuple                           #: app state flag if sideloading server is running
     sideloading_app: SideloadingServerApp               #: http sideloading server console app
     sideloading_file_ext: str = "."                     #: extension of selected sideloading file
     sideloading_file_mask: str = ""                     #: file mask of sideloading file
@@ -218,14 +234,22 @@ class SideloadingMainAppMixin:
         """ app start event. """
         self.vpo("SideloadingMainAppMixin.on_app_start")
 
-        # instantiate simple http server for apk sideloading as sup app
+        # instantiate sideloading sub app and optionally simple http server for apk sideloading
         self.sideloading_app = server_factory(task_id_func=id_of_flow)
         self.sideloading_app.run_app()
 
-        # super call is only needed (on_app_start is only available) if this mixin is inherited before KivyMainApp
         super_method: Optional[Callable] = getattr(super(), 'on_app_start', None)
         if callable(super_method):
             super_method()                      # pylint: disable=not-callable
+
+    def on_app_started(self):
+        """ initialize and start renderers after kivy app, window and widget root got initialized. """
+        super_method: Optional[Callable] = getattr(super(), 'on_app_started', None)
+        if callable(super_method):
+            super_method()                      # pylint: disable=not-callable
+
+        if self.sideloading_active:
+            self.on_sideloading_server_start("", dict())
 
     def on_file_chooser_submit(self, file_path: str, chooser_popup: Widget):
         """ event callback from FileChooserPopup.on_submit() on selection of file.
@@ -233,9 +257,11 @@ class SideloadingMainAppMixin:
         :param file_path:       path string of selected file.
         :param chooser_popup:   file chooser popup/container widget.
         """
-        self.vpo(f"SideloadingMainAppMixin.on_file_chooser_submit: file={file_path}; popup={chooser_popup}")
+        pre = "SideloadingMainAppMixin.on_file_chooser_submit: "
+        self.vpo(f"{pre}file={file_path}; popup={chooser_popup}")
 
         if chooser_popup.submit_to != 'sideloading_file_mask':
+            self.dpo(f"{pre}called with submit_to='{chooser_popup.submit_to}'")
             return
         if not os.path.isfile(file_path):
             self.show_message(get_txt("folders can't be send via sideloading"), title=get_txt("select single file"))
@@ -254,12 +280,27 @@ class SideloadingMainAppMixin:
         :param event_kwargs:    event kwargs.
         :return:                always True for to confirm change of flow id.
         """
-        self.vpo(f"SideloadingMainAppMixin.on_sideloading_server_start: event_kwargs={event_kwargs}")
+        def _upd_pr(client_ip: str = "", transferred_bytes: int = -6, total_bytes: int = 0, **kwargs):
+            """ update handler attributes for sideloading_app.client_progress and sideloading progress bars. """
+            update_handler_progress(
+                client_ip=client_ip, transferred_bytes=transferred_bytes, total_bytes=total_bytes, **kwargs)
+            client_ips = list(self.sideloading_app.client_handlers.keys())
+            if client_ips and total_bytes:
+                fore_last, last = self.sideloading_active
+                if client_ip == client_ips[-1]:
+                    last = transferred_bytes / total_bytes
+                elif len(client_ips) > 1 and client_ip == client_ips[-2]:
+                    fore_last = transferred_bytes / total_bytes
+                self.change_app_state('sideloading_active', (fore_last, last))
+
+        pre = "SideloadingMainAppMixin.on_sideloading_server_start: "
+        self.vpo(f"{pre}event_kwargs={event_kwargs}")
 
         if self.sideloading_active:
+            self.vpo(f"{pre}stop running sideloading server to restart")
             self.on_sideloading_server_stop("", dict())
 
-        if not self.sideloading_app.start_server(file_mask=self.sideloading_file_mask, threaded=True):
+        if not self.sideloading_app.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True):
             if 'tap_widget' in event_kwargs:    # let user select file if APK is not in downloads folder
                 self.change_flow(id_of_flow('open', 'file_chooser'),
                                  **update_tap_kwargs(event_kwargs['tap_widget'],
@@ -271,7 +312,7 @@ class SideloadingMainAppMixin:
             url = self.sideloading_app.server_url()
             self.change_flow(id_of_flow('open', 'qr_displayer'),
                              popup_kwargs=dict(title=url, qr_content=get_txt("sideloading url")))
-        self.change_app_state('sideloading_active', True)
+        self.change_app_state('sideloading_active', (0.0, 0.0))
 
         return True
 
@@ -282,9 +323,9 @@ class SideloadingMainAppMixin:
         :param _event_kwargs:   unused event kwargs.
         :return:                always True for to confirm change of flow id.
         """
-        self.vpo("SideloadingMainAppMixin.on_size_load_server_stop")
+        self.vpo("SideloadingMainAppMixin.on_sideloading_server_stop")
 
         self.sideloading_app.stop_server()
-        self.change_app_state('sideloading_active', False)
+        self.change_app_state('sideloading_active', ())
 
         return True
