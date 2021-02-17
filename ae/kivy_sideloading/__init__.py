@@ -32,10 +32,18 @@ To manually start it to offer the APK of the embedding app call the
 
     self.on_sideloading_server_start("", dict())
 
+.. hint:: when you pass the dict with a number in a 'port' key then this number will be used as server listening port.
+
+If no 'port' gets passed then :class:`SideloadingMainAppMixin` will calculate an individual port number from the
+first character of the :attr:`~ae.core.AppBase.app_name` of the app mixing in this class. This is to prevent
+the server socket error `[Errno 98] Address already in use` if two different applications with sideloading are
+running on the same device and want to offer sideloading.
+
 To manually pause the sideloading server call the
 :meth:`#SideloadingMainAppMixin.on_sideloading_server_stop` method passing an empty string and dict::
 
-    self.on_sideloading_server_start("", dict())
+    self.on_sideloading_server_stop("", dict())
+
 
 usage of the sideloading button
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -110,7 +118,7 @@ method.
 """
 import os
 
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 from kivy.app import App                                                                        # type: ignore
 from kivy.lang import Builder                                                                   # type: ignore
@@ -121,10 +129,10 @@ from ae.i18n import register_package_translations                               
 from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 from ae.sideloading_server import (                                                             # type: ignore
-    DEFAULT_FILE_MASK, server_factory, update_handler_progress, SideloadingServerApp)
+    DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 
 
-__version__ = '0.1.4'
+__version__ = '0.1.6'
 
 
 register_package_images()
@@ -214,7 +222,8 @@ class SideloadingMenuPopup(FlowDropDown):
 
 class SideloadingMainAppMixin:
     """ mixin class with default methods for the main app class. """
-    # abstract attributes/properties and methods
+    # abstract attributes/properties and methods provided by the main app instance where this get mixed into
+    app_name: str
     change_app_state: Callable
     change_flow: Callable
     dpo: Callable
@@ -223,8 +232,6 @@ class SideloadingMainAppMixin:
     vpo: Callable
 
     # implemented attributes
-    file_chooser_paths: List[str]                       #: file paths initially created from ae.paths.PATH_PLACEHOLDERS
-
     sideloading_active: tuple                           #: app state flag if sideloading server is running
     sideloading_app: SideloadingServerApp               #: http sideloading server console app
     sideloading_file_ext: str = "."                     #: extension of selected sideloading file
@@ -277,7 +284,9 @@ class SideloadingMainAppMixin:
         """ start the sideloading server.
 
         :param _flow_key:       unused/empty flow key.
-        :param event_kwargs:    event kwargs.
+        :param event_kwargs:    event kwargs:
+                                * 'port': TCP/IP server listening port.
+                                * 'tap_widget': button instance that initiated the start of the server.
         :return:                always True for to confirm change of flow id.
         """
         def _upd_pr(client_ip: str = "", transferred_bytes: int = -6, total_bytes: int = 0, **kwargs):
@@ -300,8 +309,12 @@ class SideloadingMainAppMixin:
             self.vpo(f"{pre}stop running sideloading server to restart")
             self.on_sideloading_server_stop("", dict())
 
-        if not self.sideloading_app.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True):
-            if 'tap_widget' in event_kwargs:    # let user select file if APK is not in downloads folder
+        self.sideloading_app.set_opt('port', event_kwargs.get('port', 36900 + ord(self.app_name[0])))
+
+        err = self.sideloading_app.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True)
+        if err:
+            self.show_message(err, title=get_txt("server start error"))
+            if FILE_COUNT_MISMATCH in err and 'tap_widget' in event_kwargs:  # let user select APK if match-count != 1
                 self.change_flow(id_of_flow('open', 'file_chooser'),
                                  **update_tap_kwargs(event_kwargs['tap_widget'],
                                                      popup_kwargs=dict(submit_to='sideloading_file_mask')))
