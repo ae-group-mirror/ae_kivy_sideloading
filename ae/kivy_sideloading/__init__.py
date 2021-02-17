@@ -121,6 +121,7 @@ import os
 from typing import Callable, Optional
 
 from kivy.app import App                                                                        # type: ignore
+from kivy.clock import mainthread                                                               # type: ignore
 from kivy.lang import Builder                                                                   # type: ignore
 from kivy.uix.widget import Widget                                                              # type: ignore
 
@@ -132,7 +133,7 @@ from ae.sideloading_server import (                                             
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 
 
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
 
 register_package_images()
@@ -289,11 +290,12 @@ class SideloadingMainAppMixin:
                                 * 'tap_widget': button instance that initiated the start of the server.
         :return:                always True for to confirm change of flow id.
         """
+        @mainthread
         def _upd_pr(client_ip: str = "", transferred_bytes: int = -6, total_bytes: int = 0, **kwargs):
             """ update handler attributes for sideloading_app.client_progress and sideloading progress bars. """
             update_handler_progress(
                 client_ip=client_ip, transferred_bytes=transferred_bytes, total_bytes=total_bytes, **kwargs)
-            client_ips = list(self.sideloading_app.client_handlers.keys())
+            client_ips = list(sap.client_handlers.keys())
             if client_ips and total_bytes:
                 fore_last, last = self.sideloading_active
                 if client_ip == client_ips[-1]:
@@ -309,9 +311,11 @@ class SideloadingMainAppMixin:
             self.vpo(f"{pre}stop running sideloading server to restart")
             self.on_sideloading_server_stop("", dict())
 
-        self.sideloading_app.set_opt('port', event_kwargs.get('port', 36900 + ord(self.app_name[0])))
+        sap = self.sideloading_app
 
-        err = self.sideloading_app.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True)
+        sap.set_opt('port', event_kwargs.get('port', 33300 + ord(self.app_name[0])), save_to_config=False)
+
+        err = sap.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True)
         if err:
             self.show_message(err, title=get_txt("server start error"))
             if FILE_COUNT_MISMATCH in err and 'tap_widget' in event_kwargs:  # let user select APK if match-count != 1
@@ -320,9 +324,9 @@ class SideloadingMainAppMixin:
                                                      popup_kwargs=dict(submit_to='sideloading_file_mask')))
             return False
 
-        self.sideloading_file_ext = os.path.splitext(self.sideloading_app.file_path)[1][1:]
+        self.sideloading_file_ext = os.path.splitext(sap.file_path)[1][1:]
         if event_kwargs:    # only display qr code if called from sideloading_button
-            url = self.sideloading_app.server_url()
+            url = sap.server_url()
             self.change_flow(id_of_flow('open', 'qr_displayer'),
                              popup_kwargs=dict(title=url, qr_content=get_txt("sideloading url")))
         self.change_app_state('sideloading_active', (0.0, 0.0))
