@@ -1,7 +1,7 @@
 {
 "help_flow#open_file_chooser": """\
 tippe um das datei-auswahl-
-fenster zu öffnen.""",
+fenster zu öffnen/schließen.""",
 "help_flow#open_iterable_displayer": """\
 tippe um die details
 anzuzeigen.""",
@@ -18,7 +18,7 @@ server zu starten.""",
 tippe um den sideloading-
 server anzuhalten.""",
 #==================================
-"display QR code for browser/QR-code-reader": "QR code für browser/QR code leser anzeigen",
+"display sideloading address/QR code": "QR code für browser/QR code leser anzeigen",
 "folders can't be send via sideloading": "verzeichnisse können nicht fürs sideloading ausgewählt werden",
 "select file for sideloading": "datei fürs sideloading auswählen",
 "select single file": "einzelne datei wählen",

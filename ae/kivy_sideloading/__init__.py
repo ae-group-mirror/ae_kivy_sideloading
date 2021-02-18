@@ -1,8 +1,8 @@
 """
-kivy mixin and widgets for to integrate a sideloading server in your app
-========================================================================
+kivy mixin and widgets to integrate a sideloading server in your app
+====================================================================
 
-This namespace portion provides widgets and a mixin class for you main app instance for to easily integrate and control
+This namespace portion provides widgets and a mixin class for you main app instance to easily integrate and control
 the `ae sideloading server <ae.sideloading_server>` into your :mod:`Kivy app <ae.kivy_app>`.
 
 
@@ -48,15 +48,15 @@ To manually pause the sideloading server call the
 usage of the sideloading button
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This ae namespace portion is additionally providing the `SideloadingButton` flow button widget for to integrate it in
-your Kivy app. This button can be used for to:
+This ae namespace portion is additionally providing the `SideloadingButton` flow button widget to integrate it in
+your Kivy app. This button can be used to:
 
 * start or stop the sideloading server,
 * select a file for sideloading via the :class:`~ae.kivy_file_chooser.FileChooserPopup`.
 * display file info like full file path and file length.
-* display the URL of your sideloading server as QR code for to allow connections from other devices.
+* display the URL of your sideloading server as QR code to allow connections from other devices.
 
-For to optionally integrate this `SideloadingButton` into your app add it to the root layout in your app's main kv file
+To optionally integrate this `SideloadingButton` into your app add it to the root layout in your app's main kv file
 with the `id` `sideloading_button`::
 
     MyRootLayout:
@@ -69,14 +69,14 @@ first check if the `Downloads` folder of the device is containing a APK file for
 sideloading server will be started providing the found APK file.
 
 If the sideloading server is instead already running/active and the user is tapping on the `SideloadingButton` then a
-drop down menu will be shown with options for to (1) display info of the sideloading file, (2) select a new file, (3)
+drop down menu will be shown with options to (1) display info of the sideloading file, (2) select a new file, (3)
 display the sideloading server URL as QR code or (4) stop the sideloading server.
 
 
 dependencies/requirements in buildozer.spec
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For to build a Android APK with the kivy sideloading server integrated, make sure that the following external packages
+To build a Android APK with the kivy sideloading server integrated, make sure that the following external packages
 are specified in the `requirements` setting of the `[app]` section of your buildozer.spec file.
 
 * ae.kivy_file_chooser
@@ -103,7 +103,7 @@ requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
 sideloading server life cycle
 -----------------------------
 
-For to activate the sideloading server to offer a different file, specify the path (or glob file mask) of the file to be
+To activate the sideloading server to offer a different file, specify the path (or glob file mask) of the file to be
 offered/available via sideloading in the :attr:`~SideloadingMainAppMixin.sideloading_file_mask` attribute and then call
 the method :meth:`~SideloadingMainAppMixin.on_sideloading_server_start`. This method will check if the specified file
 exists and if yes then it will start the sideloading server. If you specify a file mask instead of a concrete file path
@@ -133,7 +133,7 @@ from ae.sideloading_server import (                                             
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 
 
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 
 
 register_package_images()
@@ -174,7 +174,7 @@ Builder.load_string('''\
 
 
 class SideloadingMenuPopup(FlowDropDown):
-    """ dropdown menu for to control sideloading server. """
+    """ dropdown menu to control sideloading server. """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -288,7 +288,7 @@ class SideloadingMainAppMixin:
         :param event_kwargs:    event kwargs:
                                 * 'port': TCP/IP server listening port.
                                 * 'tap_widget': button instance that initiated the start of the server.
-        :return:                always True for to confirm change of flow id.
+        :return:                always True to confirm change of flow id.
         """
         @mainthread
         def _upd_pr(client_ip: str = "", transferred_bytes: int = -6, total_bytes: int = 0, **kwargs):
@@ -338,7 +338,7 @@ class SideloadingMainAppMixin:
 
         :param _flow_key:       unused/empty flow key.
         :param _event_kwargs:   unused event kwargs.
-        :return:                always True for to confirm change of flow id.
+        :return:                always True to confirm change of flow id.
         """
         self.vpo("SideloadingMainAppMixin.on_sideloading_server_stop")
 
