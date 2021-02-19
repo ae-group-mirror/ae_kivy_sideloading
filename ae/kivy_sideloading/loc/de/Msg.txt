@@ -2,9 +2,11 @@
 "help_flow#open_file_chooser": """\
 tippe um das datei-auswahl-
 fenster zu öffnen/schließen.""",
-"help_flow#open_iterable_displayer": """\
-tippe um die details
-anzuzeigen.""",
+"help_flow#open_iterable_displayer:sideloading file info": """\
+tippe um details
+zur via sideloading
+bereitgestellten
+datei anzuzeigen.""",
 "help_flow#open_qr_displayer": """\
 tippe um den QR-
 code anzuzeigen.""",
@@ -22,7 +24,7 @@ server anzuhalten.""",
 "folders can't be send via sideloading": "verzeichnisse können nicht fürs sideloading ausgewählt werden",
 "select file for sideloading": "datei fürs sideloading auswählen",
 "select single file": "einzelne datei wählen",
-"server start error": "serverstartfehler",
+"server start error": "server-start-fehler",
 "sideloading file info": "info zur aktuellen sideloading datei",
 "sideloading url": "sideloading url/adresse",
 "start sideloading server": "sideloading server starten",

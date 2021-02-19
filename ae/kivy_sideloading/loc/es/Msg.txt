@@ -2,9 +2,11 @@
 "help_flow#open_file_chooser": """\
 puntea para abrir/cerrar
 el selector de ficheros.""",
-"help_flow#open_iterable_displayer": """\
+"help_flow#open_iterable_displayer:sideloading file info": """\
 puntea para mostrar
-información detallada.""",
+información detallada
+del fichero ofrecida
+por sideloading.""",
 "help_flow#open_qr_displayer": """\
 puntea para mostrar
 el código QR.""",

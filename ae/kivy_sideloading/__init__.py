@@ -133,7 +133,7 @@ from ae.sideloading_server import (                                             
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 
 
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 
 
 register_package_images()
@@ -193,7 +193,7 @@ class SideloadingMenuPopup(FlowDropDown):
                 data['size'] = file_transfer_progress(file_size) + (f" ({file_size} bytes)" if main_app.debug else "")
             self.child_data_maps.append(dict(kwargs=dict(
                 text=get_txt("sideloading file info"),
-                tap_flow_id=id_of_flow('open', 'iterable_displayer'),
+                tap_flow_id=id_of_flow('open', 'iterable_displayer', 'sideloading file info'),
                 tap_kwargs=dict(popups_to_close=(self, ),
                                 popup_kwargs=dict(title=os.path.basename(file_path), data=data),
                                 tap_widget=sideloading_button))))

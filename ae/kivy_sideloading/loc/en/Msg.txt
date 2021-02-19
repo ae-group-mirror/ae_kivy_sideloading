@@ -2,9 +2,11 @@
 "help_flow#open_file_chooser": """\
 tap to open/close
 the file chooser.""",
-"help_flow#open_iterable_displayer": """\
+"help_flow#open_iterable_displayer:sideloading file info": """\
 tap to display more
-detailed info.""",
+detailed info for
+the file offered
+via sideloading.""",
 "help_flow#open_qr_displayer": """\
 tap to display
 the QR code.""",
