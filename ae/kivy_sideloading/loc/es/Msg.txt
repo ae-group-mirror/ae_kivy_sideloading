@@ -1,15 +1,19 @@
 {
-"help_flow#open_file_chooser": """\
+"help_flow#open_file_chooser:sideloading_file_mask": """\
 puntea para abrir/cerrar
-el selector de ficheros.""",
+el selector de ficheros
+para ofrecerlo por
+sideloading.""",
 "help_flow#open_iterable_displayer:sideloading file info": """\
 puntea para mostrar
 información detallada
 del fichero ofrecida
 por sideloading.""",
-"help_flow#open_qr_displayer": """\
+"help_flow#open_qr_displayer:sideloading_url": """\
 puntea para mostrar
-el código QR.""",
+el código QR del
+enlace del servidor
+de sideloading.""",
 "help_flow#open_sideloading_menu": """\
 puntea para abrir el menu del servidor
 de carga lateral (sideloading).""",

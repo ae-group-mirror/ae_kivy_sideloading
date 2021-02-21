@@ -133,7 +133,7 @@ from ae.sideloading_server import (                                             
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 
 
-__version__ = '0.1.9'
+__version__ = '0.1.10'
 
 
 register_package_images()
@@ -200,14 +200,14 @@ class SideloadingMenuPopup(FlowDropDown):
 
         self.child_data_maps.append(dict(kwargs=dict(
             text=get_txt("select file for sideloading"),
-            tap_flow_id=id_of_flow('open', 'file_chooser'),
+            tap_flow_id=id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
             tap_kwargs=dict(popups_to_close=(self, ),
                             popup_kwargs=dict(submit_to='sideloading_file_mask'),
                             tap_widget=sideloading_button))))
 
         self.child_data_maps.append(dict(kwargs=dict(
             text=get_txt("display sideloading address/QR code"),
-            tap_flow_id=id_of_flow('open', 'qr_displayer'),
+            tap_flow_id=id_of_flow('open', 'qr_displayer', 'sideloading_url'),
             tap_kwargs=dict(popups_to_close=(self, ),
                             popup_kwargs=dict(title=main_app.sideloading_app.server_url(),
                                               qr_content=get_txt("sideloading url")),
@@ -319,7 +319,7 @@ class SideloadingMainAppMixin:
         if err:
             self.show_message(err, title=get_txt("server start error"))
             if FILE_COUNT_MISMATCH in err and 'tap_widget' in event_kwargs:  # let user select APK if match-count != 1
-                self.change_flow(id_of_flow('open', 'file_chooser'),
+                self.change_flow(id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
                                  **update_tap_kwargs(event_kwargs['tap_widget'],
                                                      popup_kwargs=dict(submit_to='sideloading_file_mask')))
             return False
@@ -327,7 +327,7 @@ class SideloadingMainAppMixin:
         self.sideloading_file_ext = os.path.splitext(sap.file_path)[1][1:]
         if event_kwargs:    # only display qr code if called from sideloading_button
             url = sap.server_url()
-            self.change_flow(id_of_flow('open', 'qr_displayer'),
+            self.change_flow(id_of_flow('open', 'qr_displayer', 'sideloading_url'),
                              popup_kwargs=dict(title=url, qr_content=get_txt("sideloading url")))
         self.change_app_state('sideloading_active', (0.0, 0.0))
 

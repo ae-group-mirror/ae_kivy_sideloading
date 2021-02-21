@@ -1,15 +1,20 @@
 {
-"help_flow#open_file_chooser": """\
+"help_flow#open_file_chooser:sideloading_file_mask": """\
 tippe um das datei-auswahl-
-fenster zu öffnen/schließen.""",
+fenster zu öffnen/schließen
+um die via sideloading zur
+Verfügung gestellte datei
+auszuwählen.""",
 "help_flow#open_iterable_displayer:sideloading file info": """\
 tippe um details
 zur via sideloading
 bereitgestellten
 datei anzuzeigen.""",
-"help_flow#open_qr_displayer": """\
-tippe um den QR-
-code anzuzeigen.""",
+"help_flow#open_qr_displayer:sideloading_url": """\
+tippe um den QR-code
+mit der URL des
+sideloading-servers
+anzuzeigen.""",
 "help_flow#open_sideloading_menu": """\
 tippe um das sideloading
 menü anzuzeigen.""",
