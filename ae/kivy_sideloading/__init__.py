@@ -127,13 +127,13 @@ from kivy.uix.widget import Widget                                              
 
 from ae.files import file_transfer_progress                                                     # type: ignore
 from ae.i18n import register_package_translations                                               # type: ignore
-from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs  # type: ignore
-from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 from ae.sideloading_server import (                                                             # type: ignore
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
+from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs  # type: ignore
+from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.1.10'
+__version__ = '0.1.11'
 
 
 register_package_images()
@@ -229,6 +229,7 @@ class SideloadingMainAppMixin:
     change_flow: Callable
     dpo: Callable
     framework_root: Widget
+    get_opt: Callable
     show_message: Callable
     vpo: Callable
 
@@ -258,6 +259,20 @@ class SideloadingMainAppMixin:
 
         if self.sideloading_active:
             self.on_sideloading_server_start("", dict())
+
+    def on_debug_level_change(self, level_name: str, _event_kwargs: EventKwargsType) -> bool:
+        """ debug level app state change flow change confirmation event handler.
+
+        :param level_name:      the new debug level name to be set (passed as flow key).
+        :param _event_kwargs:   unused event kwargs.
+        :return:                True for to confirm the debug level change.
+        """
+        super_method: Optional[Callable] = getattr(super(), 'on_debug_level_change', None)
+        if not callable(super_method) or super_method(level_name, _event_kwargs):   # pylint: disable=not-callable
+            self.vpo(f"SideloadingMainAppMixin.on_debug_level_change to {level_name}")
+            self.sideloading_app.set_opt('debug_level', self.get_opt('debug_level'))
+            return True
+        return False
 
     def on_file_chooser_submit(self, file_path: str, chooser_popup: Widget):
         """ event callback from FileChooserPopup.on_submit() on selection of file.
