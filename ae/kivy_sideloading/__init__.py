@@ -25,10 +25,10 @@ running status of the sideloading server gets automatically stored persistent on
 app start.
 
 The running status of the sideloading server will be restored in the app start event handler method
-(:meth:`~SideloadingMainAppMixin.on_app_start).
+(:meth:`~SideloadingMainAppMixin.on_app_start`).
 
-To manually start it to offer the APK of the embedding app call the
-:meth:`#SideloadingMainAppMixin.on_sideloading_server_start` method passing an empty string and dict::
+To manually start it offering the APK of the embedding app call the
+:meth:`~SideloadingMainAppMixin.on_sideloading_server_start` method passing an empty string and dict::
 
     self.on_sideloading_server_start("", dict())
 
@@ -40,7 +40,7 @@ the server socket error `[Errno 98] Address already in use` if two different app
 running on the same device and want to offer sideloading.
 
 To manually pause the sideloading server call the
-:meth:`#SideloadingMainAppMixin.on_sideloading_server_stop` method passing an empty string and dict::
+:meth:`~SideloadingMainAppMixin.on_sideloading_server_stop` method passing an empty string and dict::
 
     self.on_sideloading_server_stop("", dict())
 
@@ -90,14 +90,14 @@ are specified in the `requirements` setting of the `[app]` section of your build
 Additionally all the packages and ae namespace portions required by the above packages have to be included. E.g. the
 `GlslTester demo app <https://gibhub.com/AndiEcker/GlslTester>`_ includes the following packages::
 
-requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
-    plyer, qrcode, kivy_garden.qrcode,
-    ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.inspector, ae.i18n,
-    ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
-    ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi, ae.kivy_help,
-    ae.kivy_relief_canvas, ae.kivy_app, ae.kivy_user_prefs, ae.kivy_glsl,
-    ae.kivy_file_chooser, ae.sideloading_server, ae.kivy_sideloading,
-    ae.kivy_iterable_displayer, ae.kivy_qr_displayer
+    requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
+        plyer, qrcode, kivy_garden.qrcode,
+        ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.inspector, ae.i18n,
+        ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
+        ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi, ae.kivy_help,
+        ae.kivy_relief_canvas, ae.kivy_app, ae.kivy_user_prefs, ae.kivy_glsl,
+        ae.kivy_file_chooser, ae.sideloading_server, ae.kivy_sideloading,
+        ae.kivy_iterable_displayer, ae.kivy_qr_displayer
 
 
 sideloading server life cycle
@@ -133,7 +133,7 @@ from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, upd
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.1.11'
+__version__ = '0.1.12'
 
 
 register_package_images()
