@@ -1,28 +1,25 @@
 {
 "help_flow#open_file_chooser:sideloading_file_mask": """\
-puntea para abrir/cerrar
-el selector de ficheros
-para ofrecerlo por
-sideloading.""",
-"help_flow#open_iterable_displayer:sideloading file info": """\
-puntea para mostrar
-información detallada
-del fichero ofrecida
+abrir/cerrar el selector
+de ficheros para ofrecerlo
 por sideloading.""",
+"help_flow#open_iterable_displayer:sideloading file info": """\
+mostrar información detallada
+del fichero ofrecida por
+sideloading.""",
 "help_flow#open_qr_displayer:sideloading_url": """\
-puntea para mostrar
-el código QR del
+mostrar el código QR del
 enlace del servidor
 de sideloading.""",
 "help_flow#open_sideloading_menu": """\
-puntea para abrir el menu del servidor
-de carga lateral (sideloading).""",
+abrir el menu del servidor de
+carga lateral (sideloading).""",
 "help_flow#start_sideloading_server": """\
-puntea para arrancar el servidor
-de carga lateral (sideloading).""",
+arrancar el servidor de carga
+lateral (sideloading).""",
 "help_flow#stop_sideloading_server":  """\
-puntea para detener el servidor
-de carga lateral (sideloading).""",
+detener el servidor de carga
+lateral (sideloading).""",
 #==================================
 "display sideloading address/QR code": "mostrar código de QR para navigador/lector de código QR",
 "folders can't be send via sideloading": "no se puede seleccionar carpetas para carga lateral (sideloading)",

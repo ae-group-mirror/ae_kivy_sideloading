@@ -130,10 +130,11 @@ from ae.i18n import register_package_translations                               
 from ae.sideloading_server import (                                                             # type: ignore
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs  # type: ignore
+from ae.gui_help import TourDropdownFromButton                                                  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.1.12'
+__version__ = '0.1.13'
 
 
 register_package_images()
@@ -219,6 +220,11 @@ class SideloadingMenuPopup(FlowDropDown):
             tap_flow_id=id_of_flow(action, 'sideloading_server'),
             tap_kwargs=dict(popups_to_close=(self, ),
                             tap_widget=sideloading_button))))
+
+
+class SideloadingMenuTour(TourDropdownFromButton):
+    """ user preferences menu tour. """
+    page_ids = [id_of_flow('open', 'sideloading_menu'), TourDropdownFromButton.determine_page_ids]
 
 
 class SideloadingMainAppMixin:

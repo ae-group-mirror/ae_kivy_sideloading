@@ -1,29 +1,28 @@
 {
 "help_flow#open_file_chooser:sideloading_file_mask": """\
-tippe um das datei-auswahl-
-fenster zu öffnen/schließen
-um die via sideloading zur
-Verfügung gestellte datei
-auszuwählen.""",
+öffne oder schließe
+das fenster zur auswahl
+der via sideloading zur
+Verfügung gestellten
+datei.""",
 "help_flow#open_iterable_displayer:sideloading file info": """\
-tippe um details
-zur via sideloading
+details zur via
+sideloading
 bereitgestellten
-datei anzuzeigen.""",
+datei anzeigen.""",
 "help_flow#open_qr_displayer:sideloading_url": """\
-tippe um den QR-code
-mit der URL des
+QR-code der URL des
 sideloading-servers
-anzuzeigen.""",
+anzeigen.""",
 "help_flow#open_sideloading_menu": """\
-tippe um das sideloading
-menü anzuzeigen.""",
+sideloading-menü
+anzeigen.""",
 "help_flow#start_sideloading_server": """\
-tippe um den sideloading-
-server zu starten.""",
+sideloading-server
+starten.""",
 "help_flow#stop_sideloading_server": """\
-tippe um den sideloading-
-server anzuhalten.""",
+sideloading-server
+anhalten.""",
 #==================================
 "display sideloading address/QR code": "QR code für browser/QR code leser anzeigen",
 "folders can't be send via sideloading": "verzeichnisse können nicht fürs sideloading ausgewählt werden",
