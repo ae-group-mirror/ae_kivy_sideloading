@@ -129,12 +129,13 @@ from ae.files import file_transfer_progress                                     
 from ae.i18n import register_package_translations                                               # type: ignore
 from ae.sideloading_server import (                                                             # type: ignore
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
-from ae.gui_app import EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs  # type: ignore
-from ae.gui_help import TourDropdownFromButton                                                  # type: ignore
+from ae.gui_app import (                                                                        # type: ignore
+    APP_STATE_SECTION_NAME, EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs)
+from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.1.13'
+__version__ = '0.1.14'
 
 
 register_package_images()
@@ -224,7 +225,9 @@ class SideloadingMenuPopup(FlowDropDown):
 
 class SideloadingMenuTour(TourDropdownFromButton):
     """ user preferences menu tour. """
-    page_ids = [id_of_flow('open', 'sideloading_menu'), TourDropdownFromButton.determine_page_ids]
+    def __init__(self, main_app: HelpAppBase):
+        super().__init__(main_app)
+        self.page_ids = [id_of_flow('open', 'sideloading_menu'), TourDropdownFromButton.determine_page_ids]
 
 
 class SideloadingMainAppMixin:
@@ -237,13 +240,23 @@ class SideloadingMainAppMixin:
     framework_root: Widget
     get_opt: Callable
     show_message: Callable
+    user_specific_cfg_vars: set
     vpo: Callable
 
     # implemented attributes
-    sideloading_active: tuple                           #: app state flag if sideloading server is running
+    sideloading_active: tuple = ()                      #: app state flag if sideloading server is running
     sideloading_app: SideloadingServerApp               #: http sideloading server console app
     sideloading_file_ext: str = "."                     #: extension of selected sideloading file
     sideloading_file_mask: str = ""                     #: file mask of sideloading file
+
+    def _init_default_user_cfg_vars(self):
+        # noinspection PyProtectedMember,PyUnresolvedReferences
+        super()._init_default_user_cfg_vars()
+        self.user_specific_cfg_vars |= {                # pylint: disable=no-member
+            (APP_STATE_SECTION_NAME, 'file_chooser_initial_path'),
+            (APP_STATE_SECTION_NAME, 'file_chooser_paths'),
+            (APP_STATE_SECTION_NAME, 'sideloading_active'),
+        }
 
     def on_app_start(self):
         """ app start event. """
@@ -271,7 +284,7 @@ class SideloadingMainAppMixin:
 
         :param level_name:      the new debug level name to be set (passed as flow key).
         :param _event_kwargs:   unused event kwargs.
-        :return:                True for to confirm the debug level change.
+        :return:                True to confirm the debug level change.
         """
         super_method: Optional[Callable] = getattr(super(), 'on_debug_level_change', None)
         if not callable(super_method) or super_method(level_name, _event_kwargs):   # pylint: disable=not-callable
