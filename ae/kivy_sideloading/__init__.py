@@ -118,7 +118,7 @@ method.
 """
 import os
 
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 
 from kivy.app import App                                                                        # type: ignore
 from kivy.clock import mainthread                                                               # type: ignore
@@ -135,7 +135,7 @@ from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.1.14'
+__version__ = '0.2.14'
 
 
 register_package_images()
@@ -244,6 +244,9 @@ class SideloadingMainAppMixin:
     vpo: Callable
 
     # implemented attributes
+    file_chooser_initial_path: str = ""                 #: used by :mod:`~ae.file_chooser` to select sideloaded file
+    file_chooser_paths: List[str] = list()              #: recently used paths as app state for file chooser
+
     sideloading_active: tuple = ()                      #: app state flag if sideloading server is running
     sideloading_app: SideloadingServerApp               #: http sideloading server console app
     sideloading_file_ext: str = "."                     #: extension of selected sideloading file
@@ -271,7 +274,7 @@ class SideloadingMainAppMixin:
             super_method()                      # pylint: disable=not-callable
 
     def on_app_started(self):
-        """ initialize and start renderers after kivy app, window and widget root got initialized. """
+        """ initialize and start shaders after kivy app, window and widget root got initialized. """
         super_method: Optional[Callable] = getattr(super(), 'on_app_started', None)
         if callable(super_method):
             super_method()                      # pylint: disable=not-callable
