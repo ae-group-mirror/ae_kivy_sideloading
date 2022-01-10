@@ -30,7 +30,7 @@ The running status of the sideloading server will be restored in the app start e
 To manually start it offering the APK of the embedding app call the
 :meth:`~SideloadingMainAppMixin.on_sideloading_server_start` method passing an empty string and dict::
 
-    self.on_sideloading_server_start("", dict())
+    self.on_sideloading_server_start("", {})
 
 .. hint:: when you pass the dict with a number in a 'port' key then this number will be used as server listening port.
 
@@ -42,7 +42,7 @@ running on the same device and want to offer sideloading.
 To manually pause the sideloading server call the
 :meth:`~SideloadingMainAppMixin.on_sideloading_server_stop` method passing an empty string and dict::
 
-    self.on_sideloading_server_stop("", dict())
+    self.on_sideloading_server_stop("", {})
 
 
 usage of the sideloading button
@@ -135,7 +135,7 @@ from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.2.14'
+__version__ = '0.3.14'
 
 
 register_package_images()
@@ -184,7 +184,7 @@ class SideloadingMenuPopup(FlowDropDown):
         main_app = app.main_app
         sideloading_button = app.root.ids.sideloading_button
 
-        self.child_data_maps = list()
+        self.child_data_maps = []
 
         file_path = main_app.sideloading_app.file_path
         if file_path or main_app.debug:
@@ -245,7 +245,7 @@ class SideloadingMainAppMixin:
 
     # implemented attributes
     file_chooser_initial_path: str = ""                 #: used by :mod:`~ae.file_chooser` to select sideloaded file
-    file_chooser_paths: List[str] = list()              #: recently used paths as app state for file chooser
+    file_chooser_paths: List[str] = []                  #: recently used paths as app state for file chooser
 
     sideloading_active: tuple = ()                      #: app state flag if sideloading server is running
     sideloading_app: SideloadingServerApp               #: http sideloading server console app
@@ -280,7 +280,7 @@ class SideloadingMainAppMixin:
             super_method()                      # pylint: disable=not-callable
 
         if self.sideloading_active:
-            self.on_sideloading_server_start("", dict())
+            self.on_sideloading_server_start("", {})
 
     def on_debug_level_change(self, level_name: str, _event_kwargs: EventKwargsType) -> bool:
         """ debug level app state change flow change confirmation event handler.
@@ -314,8 +314,8 @@ class SideloadingMainAppMixin:
 
         self.sideloading_file_mask = file_path
         if self.sideloading_active:
-            self.on_sideloading_server_stop("", dict())
-        self.on_sideloading_server_start("", dict())
+            self.on_sideloading_server_stop("", {})
+        self.on_sideloading_server_start("", {})
         chooser_popup.dismiss()
 
     def on_sideloading_server_start(self, _flow_key: str, event_kwargs: EventKwargsType) -> bool:
@@ -346,7 +346,7 @@ class SideloadingMainAppMixin:
 
         if self.sideloading_active:
             self.vpo(f"{pre}stop running sideloading server to restart")
-            self.on_sideloading_server_stop("", dict())
+            self.on_sideloading_server_stop("", {})
 
         sap = self.sideloading_app
 
