@@ -34,7 +34,7 @@ To manually start it offering the APK of the embedding app call the
 
 .. hint:: when you pass the dict with a number in a 'port' key then this number will be used as server listening port.
 
-If no 'port' gets passed then :class:`SideloadingMainAppMixin` will calculate an individual port number from the
+If no 'port' gets specified then :class:`SideloadingMainAppMixin` will calculate an individual port number from the
 first character of the :attr:`~ae.core.AppBase.app_name` of the app mixing in this class. This is to prevent
 the server socket error `[Errno 98] Address already in use` if two different applications with sideloading are
 running on the same device and want to offer sideloading.
@@ -65,19 +65,19 @@ with the `id` `sideloading_button`::
             id: sideloading_button
 
 If the sideloading server is not active and the user is clicking the `SideloadingButton` then this portion will
-first check if the `Downloads` folder of the device is containing a APK file for the running app and if yes then the
+first check if the `Downloads` folder of the device is containing an APK file for the running app and if yes then the
 sideloading server will be started providing the found APK file.
 
 If the sideloading server is instead already running/active and the user is tapping on the `SideloadingButton` then a
-drop down menu will be shown with options to (1) display info of the sideloading file, (2) select a new file, (3)
+dropdown menu will be shown with options to (1) display info of the sideloading file, (2) select a new file, (3)
 display the sideloading server URL as QR code or (4) stop the sideloading server.
 
 
-dependencies/requirements in buildozer.spec
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dependencies/requirements in `buildozer.spec`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To build a Android APK with the kivy sideloading server integrated, make sure that the following external packages
-are specified in the `requirements` setting of the `[app]` section of your buildozer.spec file.
+To build an Android APK with the kivy sideloading server integrated, make sure that the following external packages
+are specified in the `requirements` setting of the `[app]` section of your `buildozer.spec` file.
 
 * ae.kivy_file_chooser
 * ae.kivy_iterable_displayer
@@ -87,7 +87,7 @@ are specified in the `requirements` setting of the `[app]` section of your build
 * kivy_garden.qrcode
 * qrcode
 
-Additionally all the packages and ae namespace portions required by the above packages have to be included. E.g. the
+Additionally, all the packages and ae namespace portions required by the above packages have to be included. E.g. the
 `GlslTester demo app <https://gibhub.com/AndiEcker/GlslTester>`_ includes the following packages::
 
     requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
@@ -135,7 +135,7 @@ from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.3.14'
+__version__ = '0.3.15'
 
 
 register_package_images()
@@ -163,10 +163,10 @@ Builder.load_string('''\
     size_hint_x: None
     width: self.height * (3.3 if app.landscape else 2.1)
     _progress: app.app_states['sideloading_active']
-    ellipse_fill_ink: app.font_color[:3] + (0.69, )
+    ellipse_fill_ink: app.font_color[:3] + [0.69]
     ellipse_fill_pos: self.x, self.top - app.app_states['font_size'] / 3.0
     ellipse_fill_size: self.width * (self._progress and self._progress[0] or 0), app.app_states['font_size'] / 3.0
-    square_fill_ink: app.font_color[:3] + (0.69, )
+    square_fill_ink: app.font_color[:3] + [0.69]
     square_fill_pos: self.pos
     square_fill_size: self.width * (self._progress and self._progress[1] or 0), app.app_states['font_size'] / 3.0
     relief_square_inner_colors:
@@ -244,7 +244,7 @@ class SideloadingMainAppMixin:
     vpo: Callable
 
     # implemented attributes
-    file_chooser_initial_path: str = ""                 #: used by :mod:`~ae.file_chooser` to select sideloaded file
+    file_chooser_initial_path: str = ""                 #: used by :mod:`~ae.file_chooser` to select side-loaded file
     file_chooser_paths: List[str] = []                  #: recently used paths as app state for file chooser
 
     sideloading_active: tuple = ()                      #: app state flag if sideloading server is running
