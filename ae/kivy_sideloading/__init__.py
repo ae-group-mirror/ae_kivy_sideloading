@@ -135,7 +135,7 @@ from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.3.15'
+__version__ = '0.3.16'
 
 
 register_package_images()
