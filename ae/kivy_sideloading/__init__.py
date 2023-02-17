@@ -92,7 +92,7 @@ Additionally, all the packages and ae namespace portions required by the above p
 
     requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
         plyer, qrcode, kivy_garden.qrcode,
-        ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.inspector, ae.i18n,
+        ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.dynamicod, ae.i18n,
         ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
         ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi, ae.kivy_help,
         ae.kivy_relief_canvas, ae.kivy_app, ae.kivy_user_prefs, ae.kivy_glsl,
@@ -135,7 +135,7 @@ from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
 from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
 
 
-__version__ = '0.3.16'
+__version__ = '0.3.17'
 
 
 register_package_images()
