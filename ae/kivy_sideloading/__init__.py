@@ -3,7 +3,7 @@ kivy mixin and widgets to integrate a sideloading server in your app
 ====================================================================
 
 This namespace portion provides widgets and a mixin class for you main app instance to easily integrate and control
-the `ae sideloading server <ae.sideloading_server>` into your :mod:`Kivy app <ae.kivy_app>`.
+the `ae sideloading server <ae.sideloading_server>` into your :class:`main app <ae.kivy.apps.KivyMainApp>`.
 
 
 kivy sideloading integration into your main app class
@@ -18,7 +18,7 @@ the :attr:`~SideloadingMainAppMixin.sideloading_app` attribute with this sub app
 
 .. hint::
     If you prefer to instantiate the sideloading server sub app manually then specify :class:`SideloadingMainAppMixin`
-    after :class:`~ae.kivy_app.KivyMainApp` in the declaration of your main app class.
+    after :class:`~ae.kivy.apps.KivyMainApp` in the declaration of your main app class.
 
 Adding `sideloading_active` to the `:ref:`app state variables` of your app's :ref:`config files` will ensure that the
 running status of the sideloading server gets automatically stored persistent on pause or stop of the app for the next
@@ -94,8 +94,8 @@ Additionally, all the packages and ae namespace portions required by the above p
         plyer, qrcode, kivy_garden.qrcode,
         ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.dynamicod, ae.i18n,
         ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
-        ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi, ae.kivy_help,
-        ae.kivy_relief_canvas, ae.kivy_app, ae.kivy_user_prefs, ae.kivy_glsl,
+        ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi,
+        ae.kivy_relief_canvas, ae.kivy, ae.kivy_user_prefs, ae.kivy_glsl,
         ae.kivy_file_chooser, ae.sideloading_server, ae.kivy_sideloading,
         ae.kivy_iterable_displayer, ae.kivy_qr_displayer
 
@@ -131,11 +131,12 @@ from ae.sideloading_server import (                                             
     DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 from ae.gui_app import (                                                                        # type: ignore
     APP_STATE_SECTION_NAME, EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs)
-from ae.gui_help import HelpAppBase, TourDropdownFromButton  # type: ignore
-from ae.kivy_app import FlowDropDown, get_txt                                                   # type: ignore
+from ae.gui_help import HelpAppBase, TourDropdownFromButton                                     # type: ignore
+from ae.kivy.widgets import FlowDropDown                                                        # type: ignore
+from ae.kivy.i18n import get_txt                                                                # type: ignore
 
 
-__version__ = '0.3.17'
+__version__ = '0.3.18'
 
 
 register_package_images()
