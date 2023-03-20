@@ -176,7 +176,7 @@ Builder.load_string('''\
 ''')
 
 
-class SideloadingMenuPopup(FlowDropDown):
+class SideloadingMenuPopup(FlowDropDown):                                                           # pragma: no cover
     """ dropdown menu to control sideloading server. """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -224,14 +224,14 @@ class SideloadingMenuPopup(FlowDropDown):
                             tap_widget=sideloading_button))))
 
 
-class SideloadingMenuTour(TourDropdownFromButton):
+class SideloadingMenuTour(TourDropdownFromButton):                                                  # pragma: no cover
     """ user preferences menu tour. """
     def __init__(self, main_app: HelpAppBase):
         super().__init__(main_app)
         self.page_ids = [id_of_flow('open', 'sideloading_menu'), TourDropdownFromButton.determine_page_ids]
 
 
-class SideloadingMainAppMixin:
+class SideloadingMainAppMixin:                                                                      # pragma: no cover
     """ mixin class with default methods for the main app class. """
     # abstract attributes/properties and methods provided by the main app instance where this get mixed into
     app_name: str
