@@ -25,7 +25,7 @@ running status of the sideloading server gets automatically stored persistent on
 app start.
 
 The running status of the sideloading server will be restored in the app start event handler method
-(:meth:`~SideloadingMainAppMixin.on_app_start`).
+(:meth:`~SideloadingMainAppMixin.on_app_run`).
 
 To manually start it offering the APK of the embedding app call the
 :meth:`~SideloadingMainAppMixin.on_sideloading_server_start` method passing an empty string and dict::
@@ -92,7 +92,7 @@ Additionally, all the packages and ae namespace portions required by the above p
 
     requirements = android, hostpython3==3.7.5, python3==3.7.5, kivy==2.0.0,
         plyer, qrcode, kivy_garden.qrcode,
-        ae.base, ae.files, ae.paths, ae.deep, ae.droid, ae.dynamicod, ae.i18n,
+        ae.base, ae.files, ae.paths, ae.deep, ae.dynamicod, ae.i18n,
         ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
         ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi,
         ae.kivy_relief_canvas, ae.kivy, ae.kivy_user_prefs, ae.kivy_glsl,
@@ -136,7 +136,7 @@ from ae.kivy.widgets import FlowDropDown                                        
 from ae.kivy.i18n import get_txt                                                                # type: ignore
 
 
-__version__ = '0.3.18'
+__version__ = '0.3.19'
 
 
 register_package_images()
@@ -176,7 +176,7 @@ Builder.load_string('''\
 ''')
 
 
-class SideloadingMenuPopup(FlowDropDown):
+class SideloadingMenuPopup(FlowDropDown):                                                           # pragma: no cover
     """ dropdown menu to control sideloading server. """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -224,14 +224,14 @@ class SideloadingMenuPopup(FlowDropDown):
                             tap_widget=sideloading_button))))
 
 
-class SideloadingMenuTour(TourDropdownFromButton):
+class SideloadingMenuTour(TourDropdownFromButton):                                                  # pragma: no cover
     """ user preferences menu tour. """
     def __init__(self, main_app: HelpAppBase):
         super().__init__(main_app)
         self.page_ids = [id_of_flow('open', 'sideloading_menu'), TourDropdownFromButton.determine_page_ids]
 
 
-class SideloadingMainAppMixin:
+class SideloadingMainAppMixin:                                                                      # pragma: no cover
     """ mixin class with default methods for the main app class. """
     # abstract attributes/properties and methods provided by the main app instance where this get mixed into
     app_name: str
@@ -262,15 +262,15 @@ class SideloadingMainAppMixin:
             (APP_STATE_SECTION_NAME, 'sideloading_active'),
         }
 
-    def on_app_start(self):
-        """ app start event. """
-        self.vpo("SideloadingMainAppMixin.on_app_start")
+    def on_app_run(self):
+        """ run app event. """
+        self.vpo("SideloadingMainAppMixin.on_app_run")
 
         # instantiate sideloading sub app and optionally simple http server for apk sideloading
         self.sideloading_app = server_factory(task_id_func=id_of_flow)
         self.sideloading_app.run_app()
 
-        super_method: Optional[Callable] = getattr(super(), 'on_app_start', None)
+        super_method: Optional[Callable] = getattr(super(), 'on_app_run', None)
         if callable(super_method):
             super_method()                      # pylint: disable=not-callable
 
