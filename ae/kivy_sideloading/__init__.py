@@ -3,7 +3,7 @@ kivy mixin and widgets to integrate a sideloading server in your app
 ====================================================================
 
 this namespace portion provides widgets and a mixin class for you main app instance to easily integrate and control
-the `ae sideloading server <ae.sideloading_server>` into your :class:`main app <ae.kivy.apps.KivyMainApp>`.
+the :mod:`ae sideloading server <ae.sideloading_server>` into your :class:`main app <ae.kivy.apps.KivyMainApp>`.
 
 
 kivy sideloading integration into your main app class
@@ -86,10 +86,11 @@ are specified in the `requirements` setting of the `[app]` section of your `buil
 * ae.sideloading_server
 * kivy_garden.qrcode
 * qrcode
+* typing_extensions
 
 additionally, the following packages and ae namespace portions required by the above packages have to be included::
 
-        qrcode, kivy_garden.qrcode,
+        typing_extensions, qrcode, kivy_garden.qrcode,
         ae.base, ae.files, ae.paths, ae.deep, ae.dynamicod, ae.i18n,
         ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui_app,
         ae.gui_help, ae.kivy_auto_width, ae.kivy_dyn_chi,
@@ -138,7 +139,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.20'
+__version__ = '0.3.21'
 
 
 register_package_images()
@@ -229,7 +230,7 @@ class SideloadingMainAppMixin:                                                  
     def _init_default_user_cfg_vars(self):
         # noinspection PyProtectedMember,PyUnresolvedReferences
         super()._init_default_user_cfg_vars()
-        self.user_specific_cfg_vars |= {                # pylint: disable=no-member
+        self.user_specific_cfg_vars |= {
             (APP_STATE_SECTION_NAME, 'file_chooser_initial_path'),
             (APP_STATE_SECTION_NAME, 'file_chooser_paths'),
             (APP_STATE_SECTION_NAME, 'sideloading_active'),
