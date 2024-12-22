@@ -139,7 +139,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.21'
+__version__ = '0.3.22'
 
 
 register_package_images()
@@ -350,7 +350,7 @@ class SideloadingMainAppMixin:                                                  
 
         :param _flow_key:       unused/empty flow key.
         :param _event_kwargs:   unused event kwargs.
-        :re change of flow id.
+        :return:                always True to confirm change of flow id.
         """
         self.vpo("SideloadingMainAppMixin.on_sideloading_server_stop")
 
