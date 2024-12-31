@@ -124,6 +124,7 @@ from kivy.clock import mainthread                                               
 from kivy.lang import Builder                                                               # type: ignore
 from kivy.uix.widget import Widget                                                          # type: ignore
 
+from ae.base import UNSET                                                                   # type: ignore
 from ae.files import file_transfer_progress                                                 # type: ignore
 from ae.i18n import register_package_translations                                           # type: ignore
 from ae.sideloading_server import (                                                         # type: ignore
@@ -139,7 +140,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.22'
+__version__ = '0.3.23'
 
 
 register_package_images()
@@ -163,39 +164,39 @@ class SideloadingMenuPopup(FlowDropDown):                                       
 
         file_path = main_app.sideloading_app.file_path
         if file_path or main_app.debug:
-            data = dict(mask=main_app.sideloading_file_mask or DEFAULT_FILE_MASK,
-                        extension=main_app.sideloading_file_ext, path=file_path)
+            data = {'mask': main_app.sideloading_file_mask or DEFAULT_FILE_MASK,
+                    'extension': main_app.sideloading_file_ext,
+                    'path': file_path}
             if file_path:
                 file_size = os.path.getsize(file_path)
                 data['size'] = file_transfer_progress(file_size) + (f" ({file_size} bytes)" if main_app.debug else "")
-            self.child_data_maps.append(dict(kwargs=dict(
-                text=get_txt("sideloading file info"),
-                tap_flow_id=id_of_flow('open', 'iterable_displayer', 'sideloading file info'),
-                tap_kwargs=dict(popups_to_close=(self, ),
-                                popup_kwargs=dict(title=os.path.basename(file_path), data=data),
-                                tap_widget=sideloading_button))))
+            self.child_data_maps.append({
+                'kwargs': {'text': get_txt("sideloading file info"),
+                           'tap_flow_id': id_of_flow('open', 'iterable_displayer', 'sideloading file info'),
+                           'tap_kwargs': {'popups_to_close': (self, ), 'popup_kwargs': {
+                               'title': os.path.basename(file_path), 'data': data}, 'tap_widget': sideloading_button}}})
 
-        self.child_data_maps.append(dict(kwargs=dict(
-            text=get_txt("select file for sideloading"),
-            tap_flow_id=id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
-            tap_kwargs=dict(popups_to_close=(self, ),
-                            popup_kwargs=dict(submit_to='sideloading_file_mask'),
-                            tap_widget=sideloading_button))))
+        self.child_data_maps.append({
+            'kwargs': {'text': get_txt("select file for sideloading"),
+                       'tap_flow_id': id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
+                       'tap_kwargs': {'popups_to_close': (self, ),
+                                      'popup_kwargs': {'submit_to': 'sideloading_file_mask'},
+                                      'tap_widget': sideloading_button}}})
 
-        self.child_data_maps.append(dict(kwargs=dict(
-            text=get_txt("display sideloading address/QR code"),
-            tap_flow_id=id_of_flow('open', 'qr_displayer', 'sideloading_url'),
-            tap_kwargs=dict(popups_to_close=(self, ),
-                            popup_kwargs=dict(title=main_app.sideloading_app.server_url(),
-                                              qr_content=get_txt("sideloading url")),
-                            tap_widget=sideloading_button))))
+        self.child_data_maps.append({
+            'kwargs': {'text': get_txt("display sideloading address/QR code"),
+                       'tap_flow_id': id_of_flow('open', 'qr_displayer', 'sideloading_url'),
+                       'tap_kwargs': {'popups_to_close': (self, ),
+                                      'tap_widget': sideloading_button,
+                                      'popup_kwargs': {
+                                        'title': main_app.sideloading_app.server_url(),
+                                        'qr_content': get_txt("sideloading url")}}}})
 
         action = 'stop' if main_app.sideloading_active else 'start'
-        self.child_data_maps.append(dict(kwargs=dict(
-            text=get_txt(action + " sideloading server"),
-            tap_flow_id=id_of_flow(action, 'sideloading_server'),
-            tap_kwargs=dict(popups_to_close=(self, ),
-                            tap_widget=sideloading_button))))
+        self.child_data_maps.append({
+            'kwargs': {'text': get_txt(action + " sideloading server"),
+                       'tap_flow_id': id_of_flow(action, 'sideloading_server'),
+                       'tap_kwargs': {'popups_to_close': (self, ), 'tap_widget': sideloading_button}}})
 
 
 class SideloadingMenuTour(TourDropdownFromButton):                                          # pragma: no cover
@@ -248,6 +249,22 @@ class SideloadingMainAppMixin:                                                  
         if callable(super_method):
             super_method()                      # pylint: disable=not-callable
 
+    def on_app_state_version_upgrade(self, from_version: int):
+        """ upgrade app state config vars from the specified app state version to the next one.
+
+        :param from_version:        app state version to upgrade from.
+        """
+        # super_method: Optional[Callable] = getattr(super(), 'on_app_state_version_upgrade', None)
+        super_method = getattr(super(), 'on_app_state_version_upgrade', None)
+        if callable(super_method):
+            super_method(from_version)          # pylint: disable=not-callable
+        self.vpo(f"SideloadingMainAppMixin.on_app_state_version_upgrade {from_version=}")
+
+        if from_version == 3:  # add file chooser and sideloading app state variables
+            self.change_app_state('file_chooser_initial_path', "", send_event=False, old_name=UNSET)
+            self.change_app_state('file_chooser_paths', [], send_event=False, old_name=UNSET)
+            self.change_app_state('sideloading_active', (), send_event=False, old_name=UNSET)
+
     def on_app_started(self):
         """ initialize and start shaders after kivy app, window and widget root got initialized. """
         super_method: Optional[Callable] = getattr(super(), 'on_app_started', None)
@@ -278,7 +295,7 @@ class SideloadingMainAppMixin:                                                  
         :param chooser_popup:   file chooser popup/container widget.
         """
         pre = "SideloadingMainAppMixin.on_file_chooser_submit: "
-        self.vpo(f"{pre}file={file_path}; popup={chooser_popup}")
+        self.vpo(f"{pre}file={file_path}; {chooser_popup=}")
 
         if chooser_popup.submit_to != 'sideloading_file_mask':
             self.dpo(f"{pre}called with submit_to='{chooser_popup.submit_to}'")
@@ -317,7 +334,7 @@ class SideloadingMainAppMixin:                                                  
                 self.change_app_state('sideloading_active', (fore_last, last))
 
         pre = "SideloadingMainAppMixin.on_sideloading_server_start: "
-        self.vpo(f"{pre}event_kwargs={event_kwargs}")
+        self.vpo(f"{pre}{event_kwargs=}")
 
         if self.sideloading_active:
             self.vpo(f"{pre}stop running sideloading server to restart")
@@ -333,14 +350,14 @@ class SideloadingMainAppMixin:                                                  
             if FILE_COUNT_MISMATCH in err and 'tap_widget' in event_kwargs:  # let user select APK if match-count != 1
                 self.change_flow(id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
                                  **update_tap_kwargs(event_kwargs['tap_widget'],
-                                                     popup_kwargs=dict(submit_to='sideloading_file_mask')))
+                                                     popup_kwargs={'submit_to': 'sideloading_file_mask'}))
             return False
 
         self.sideloading_file_ext = os.path.splitext(sap.file_path)[1][1:]
         if event_kwargs:    # only display qr code if called from sideloading_button
             url = sap.server_url()
             self.change_flow(id_of_flow('open', 'qr_displayer', 'sideloading_url'),
-                             popup_kwargs=dict(title=url, qr_content=get_txt("sideloading url")))
+                             popup_kwargs={'title': url, 'qr_content': get_txt("sideloading url")})
         self.change_app_state('sideloading_active', (0.0, 0.0))
 
         return True
