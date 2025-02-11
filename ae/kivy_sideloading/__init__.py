@@ -13,11 +13,11 @@ add the :class:`SideloadingMainAppMixin` mixin provided by this ae namespace por
 
     class MyMainAppClass(SideloadingMainAppMixin, KivyMainApp):
 
-the sub app of the sideloading server will then automatically be instantiated when your app starts and will initialize
-the :attr:`~SideloadingMainAppMixin.sideloading_app` attribute with this sub app instance.
+the sub-app of the sideloading server will then automatically be instantiated when your app starts and will initialize
+the :attr:`~SideloadingMainAppMixin.sideloading_app` attribute with this sub-app instance.
 
 .. hint::
-    if you prefer to instantiate the sideloading server sub app manually then specify :class:`SideloadingMainAppMixin`
+    if you prefer to instantiate the sideloading server sub-app manually then specify :class:`SideloadingMainAppMixin`
     after :class:`~ae.kivy.apps.KivyMainApp` in the declaration of your main app class.
 
 adding `sideloading_active` to the `:ref:`app state variables` of your app's :ref:`config files` will ensure that the
@@ -128,9 +128,9 @@ from ae.base import UNSET                                                       
 from ae.files import file_transfer_progress                                                 # type: ignore
 from ae.i18n import register_package_translations                                           # type: ignore
 from ae.sideloading_server import (                                                         # type: ignore
-    DEFAULT_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
+    DEFAULT_APK_FILE_MASK, FILE_COUNT_MISMATCH, server_factory, update_handler_progress, SideloadingServerApp)
 from ae.gui_app import (                                                                    # type: ignore
-    APP_STATE_SECTION_NAME, EventKwargsType, id_of_flow, register_package_images, update_tap_kwargs)
+    APP_STATE_SECTION_NAME, EventKwargsType, id_of_flow, register_package_images)
 from ae.gui_help import HelpAppBase, TourDropdownFromButton                                 # type: ignore
 from ae.kivy.widgets import FlowDropDown                                                    # type: ignore
 from ae.kivy.i18n import get_txt                                                            # type: ignore
@@ -140,15 +140,12 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.23'
+__version__ = '0.3.24'
 
 
-register_package_images()
-register_package_translations()
-
-
-# load/declare package widgets
-Builder.load_file(os.path.join(os.path.dirname(__file__), "widgets.kv"))
+register_package_images()                                                                   # load package images
+register_package_translations()                                                             # load package translations
+Builder.load_file(os.path.join(os.path.dirname(__file__), "widgets.kv"))                    # declare package widgets
 
 
 class SideloadingMenuPopup(FlowDropDown):                                                   # pragma: no cover
@@ -164,11 +161,15 @@ class SideloadingMenuPopup(FlowDropDown):                                       
 
         file_path = main_app.sideloading_app.file_path
         if file_path or main_app.debug:
-            data = {'mask': main_app.sideloading_file_mask or DEFAULT_FILE_MASK,
+            data = {'mask': main_app.sideloading_file_mask or DEFAULT_APK_FILE_MASK,
                     'extension': main_app.sideloading_file_ext,
                     'path': file_path}
             if file_path:
-                file_size = os.path.getsize(file_path)
+                try:
+                    file_size = os.path.getsize(file_path)
+                except (FileNotFoundError, Exception) as ex:
+                    main_app.vpo(f"{self.__class__.__name__}.__init__({kwargs=}): {ex=} on get size of {file_path=}")
+                    file_size = 0
                 data['size'] = file_transfer_progress(file_size) + (f" ({file_size} bytes)" if main_app.debug else "")
             self.child_data_maps.append({
                 'kwargs': {'text': get_txt("sideloading file info"),
@@ -241,7 +242,7 @@ class SideloadingMainAppMixin:                                                  
         """ run app event. """
         self.vpo("SideloadingMainAppMixin.on_app_run")
 
-        # instantiate sideloading sub app and optionally simple http server for apk sideloading
+        # instantiate sideloading sub-app and optionally simple http server for apk sideloading
         self.sideloading_app = server_factory(task_id_func=id_of_flow)
         self.sideloading_app.run_app()
 
@@ -346,11 +347,17 @@ class SideloadingMainAppMixin:                                                  
 
         err = sap.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True)
         if err:
-            self.show_message(err, title=get_txt("server start error"))
             if FILE_COUNT_MISMATCH in err and 'tap_widget' in event_kwargs:  # let user select APK if match-count != 1
+                # **update_tap_kwargs(event_kwargs['tap_widget'], popup_kwargs={'submit_to': 'sideloading_file_mask'})
+                # .. cannot be used as change_flow-event_kwargs because this would add submit_to key to the sieeloading-
+                # .. FlowButton.tap_kwargs which then would have to be removed (ugly) in SideloadingMenuPopup.__init__()
+                # ,, after the sideloading-button gets redirected back to open the sideloading-menu.
                 self.change_flow(id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
-                                 **update_tap_kwargs(event_kwargs['tap_widget'],
-                                                     popup_kwargs={'submit_to': 'sideloading_file_mask'}))
+                                 popup_kwargs={'submit_to': 'sideloading_file_mask',
+                                               'opener': event_kwargs['tap_widget']},
+                                 tap_widget=event_kwargs['tap_widget'])
+            else:
+                self.show_message(err, title=get_txt("server start error"))
             return False
 
         self.sideloading_file_ext = os.path.splitext(sap.file_path)[1][1:]
