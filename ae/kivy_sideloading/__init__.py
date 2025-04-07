@@ -140,7 +140,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.24'
+__version__ = '0.3.25'
 
 
 register_package_images()                                                                   # load package images
@@ -148,7 +148,7 @@ register_package_translations()                                                 
 Builder.load_file(os.path.join(os.path.dirname(__file__), "widgets.kv"))                    # declare package widgets
 
 
-class SideloadingMenuPopup(FlowDropDown):                                                   # pragma: no cover
+class SideloadingMenuPopup(FlowDropDown):                       # pragma: no cover # pylint: disable=too-many-ancestors
     """ dropdown menu to control sideloading server. """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -167,7 +167,7 @@ class SideloadingMenuPopup(FlowDropDown):                                       
             if file_path:
                 try:
                     file_size = os.path.getsize(file_path)
-                except (FileNotFoundError, Exception) as ex:
+                except (FileNotFoundError, Exception) as ex:        # pylint: disable=broad-exception-caught
                     main_app.vpo(f"{self.__class__.__name__}.__init__({kwargs=}): {ex=} on get size of {file_path=}")
                     file_size = 0
                 data['size'] = file_transfer_progress(file_size) + (f" ({file_size} bytes)" if main_app.debug else "")
@@ -232,7 +232,7 @@ class SideloadingMainAppMixin:                                                  
     def _init_default_user_cfg_vars(self):
         # noinspection PyProtectedMember,PyUnresolvedReferences
         super()._init_default_user_cfg_vars()
-        self.user_specific_cfg_vars |= {
+        self.user_specific_cfg_vars |= {                            # pylint: disable=no-member
             (APP_STATE_SECTION_NAME, 'file_chooser_initial_path'),
             (APP_STATE_SECTION_NAME, 'file_chooser_paths'),
             (APP_STATE_SECTION_NAME, 'sideloading_active'),
@@ -349,7 +349,7 @@ class SideloadingMainAppMixin:                                                  
         if err:
             if FILE_COUNT_MISMATCH in err and 'tap_widget' in event_kwargs:  # let user select APK if match-count != 1
                 # **update_tap_kwargs(event_kwargs['tap_widget'], popup_kwargs={'submit_to': 'sideloading_file_mask'})
-                # .. cannot be used as change_flow-event_kwargs because this would add submit_to key to the sieeloading-
+                # .. cannot be used as change_flow-event_kwargs because this would add submit_to key to the sideloading-
                 # .. FlowButton.tap_kwargs which then would have to be removed (ugly) in SideloadingMenuPopup.__init__()
                 # ,, after the sideloading-button gets redirected back to open the sideloading-menu.
                 self.change_flow(id_of_flow('open', 'file_chooser', 'sideloading_file_mask'),
