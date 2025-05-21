@@ -140,7 +140,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.26'
+__version__ = '0.3.27'
 
 
 register_package_images()                                                                   # load package images
@@ -153,13 +153,13 @@ class SideloadingMenuPopup(FlowDropDown):                       # pragma: no cov
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        app = App.get_running_app()
-        main_app = app.main_app
-        sideloading_button = app.root.ids.sideloading_button
+        main_app = App.get_running_app().main_app
+        sideloading_button = main_app.widget_by_id('sideloading_button')
+        assert sideloading_button, "missing instance of a sideloading button in the app widgets tree"
 
         self.child_data_maps = []
 
-        file_path = main_app.sideloading_app.file_path
+        file_path = getattr(main_app.sideloading_app, 'sideloading_file_path')
         if file_path or main_app.debug:
             data = {'mask': main_app.sideloading_file_mask or DEFAULT_APK_FILE_MASK,
                     'extension': main_app.sideloading_file_ext,
@@ -360,7 +360,7 @@ class SideloadingMainAppMixin:                                                  
                 self.show_message(err, title=get_txt("server start error"))
             return False
 
-        self.sideloading_file_ext = os.path.splitext(sap.file_path)[1][1:]
+        self.sideloading_file_ext = os.path.splitext(sap.sideloading_file_path)[1][1:]
         if event_kwargs:    # only display qr code if called from sideloading_button
             url = sap.server_url()
             self.change_flow(id_of_flow('open', 'qr_displayer', 'sideloading_url'),
