@@ -140,7 +140,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.27'
+__version__ = '0.3.28'
 
 
 register_package_images()                                                                   # load package images
@@ -215,7 +215,7 @@ class SideloadingMainAppMixin:                                                  
     change_flow: Callable
     dpo: Callable
     framework_root: Widget
-    get_opt: Callable
+    get_option: Callable
     show_message: Callable
     user_specific_cfg_vars: set
     vpo: Callable
@@ -285,7 +285,7 @@ class SideloadingMainAppMixin:                                                  
         super_method: Optional[Callable] = getattr(super(), 'on_debug_level_change', None)
         if not callable(super_method) or super_method(level_name, _event_kwargs):   # pylint: disable=not-callable
             self.vpo(f"SideloadingMainAppMixin.on_debug_level_change to {level_name}")
-            self.sideloading_app.set_opt('debug_level', self.get_opt('debug_level'))
+            self.sideloading_app.set_option('debug_level', self.get_option('debug_level'))
             return True
         return False
 
@@ -343,7 +343,7 @@ class SideloadingMainAppMixin:                                                  
 
         sap = self.sideloading_app
 
-        sap.set_opt('port', event_kwargs.get('port', 33300 + ord(self.app_name[0])), save_to_config=False)
+        sap.set_option('port', event_kwargs.get('port', 33300 + ord(self.app_name[0])), save_to_config=False)
 
         err = sap.start_server(file_mask=self.sideloading_file_mask, progress=_upd_pr, threaded=True)
         if err:
