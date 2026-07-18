@@ -1,12 +1,12 @@
-<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project ae.ae v0.3.101 -->
-<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project aedev.namespace_root_tpls v0.3.22 -->
-# kivy_sideloading 0.3.28
+<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project ae.ae v0.3.104 -->
+<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project aedev.namespace_root_tpls v0.3.31 -->
+# kivy_sideloading 0.3.29
 
 [![GitLab develop](https://img.shields.io/gitlab/pipeline/ae-group/ae_kivy_sideloading/develop?logo=python)](
     https://gitlab.com/ae-group/ae_kivy_sideloading)
 [![LatestPyPIrelease](
-    https://img.shields.io/gitlab/pipeline/ae-group/ae_kivy_sideloading/release0.3.28?logo=python)](
-    https://gitlab.com/ae-group/ae_kivy_sideloading/-/tree/release0.3.28)
+    https://img.shields.io/gitlab/pipeline/ae-group/ae_kivy_sideloading/release0.3.29?logo=python)](
+    https://gitlab.com/ae-group/ae_kivy_sideloading/-/tree/release0.3.29)
 [![PyPIVersions](https://img.shields.io/pypi/v/ae_kivy_sideloading)](
     https://pypi.org/project/ae-kivy-sideloading/#history)
 
@@ -35,8 +35,8 @@
     https://pypi.org/project/ae-kivy-sideloading/#files)
 
 
-## installation
 
+## installation
 
 execute the following command to install the
 ae.kivy_sideloading package
@@ -54,13 +54,17 @@ following command in the root folder of this repository
 (ae_kivy_sideloading):
 
 ```shell script
-pip install -e .[dev]
+pip install --editable .[dev]
 ```
 
-the last command will install this package portion, along with the tools you need
-to develop and run tests or to extend the portion documentation. to contribute only to the unit tests or to the
-documentation of this portion, replace the setup extras key `dev` in the above command with `tests` or `docs`
-respectively.
+this command installs this package portion project
+along with the necessary tools to modify the source code,
+run unit tests, and build documentation. to install only
+the dependencies required for a specific task,  replace
+`dev` with one of the following:
+
+    * `tests`: for contributing to the unit test suite
+    * `docs`: for maintaining and building documentation
 
 more detailed explanations on how to contribute to this project
 [are available here](
@@ -69,7 +73,9 @@ https://gitlab.com/ae-group/ae_kivy_sideloading/-/blob/develop/CONTRIBUTING.rst)
 
 ## namespace portion documentation
 
-information on the features and usage of this portion are available at
+the documentation of the source code of this portion is available at
 [ReadTheDocs](
 https://ae.readthedocs.io/en/latest/_autosummary/ae.kivy_sideloading.html
 "ae_kivy_sideloading documentation").
+
+

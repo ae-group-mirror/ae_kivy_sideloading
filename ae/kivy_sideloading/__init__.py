@@ -92,7 +92,7 @@ additionally, the following packages and ae namespace portions required by the a
 
         typing_extensions, qrcode, kivy_garden.qrcode,
         ae.base, ae.files, ae.paths, ae.deep, ae.dynamicod, ae.i18n,
-        ae.updater, ae.core, ae.literal, ae.console, ae.parse_date, ae.gui,
+        ae.updater, ae.core, ae.literal, ae.console, ae.gui,
         ae.kivy_auto_width, ae.kivy_dyn_chi, ae.kivy_relief_canvas, ae.kivy, ae.kivy_user_prefs, ae.kivy_glsl,
         ae.kivy_file_chooser, ae.sideloading_server, ae.kivy_sideloading,
         ae.kivy_iterable_displayer, ae.kivy_qr_displayer
@@ -116,7 +116,7 @@ method.
 """
 import os
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from kivy.app import App                                                                    # type: ignore
 from kivy.clock import mainthread                                                           # type: ignore
@@ -140,11 +140,12 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.28'
+__version__ = '0.3.29'
 
 
 register_package_images()                                                                   # load package images
 register_package_translations()                                                             # load package translations
+# noinspection PyTypeChecker
 Builder.load_file(os.path.join(os.path.dirname(__file__), "widgets.kv"))                    # declare package widgets
 
 
@@ -246,7 +247,7 @@ class SideloadingMainAppMixin:                                                  
         self.sideloading_app = server_factory(task_id_func=id_of_flow)
         self.sideloading_app.run_app()
 
-        super_method: Optional[Callable] = getattr(super(), 'on_app_run', None)
+        super_method: Callable | None = getattr(super(), 'on_app_run', None)
         if callable(super_method):
             super_method()                      # pylint: disable=not-callable
 
@@ -255,7 +256,7 @@ class SideloadingMainAppMixin:                                                  
 
         :param from_version:        app state version to upgrade from.
         """
-        # super_method: Optional[Callable] = getattr(super(), 'on_app_state_version_upgrade', None)
+        # super_method: Callable | None = getattr(super(), 'on_app_state_version_upgrade', None)
         super_method = getattr(super(), 'on_app_state_version_upgrade', None)
         if callable(super_method):
             super_method(from_version)          # pylint: disable=not-callable
@@ -268,7 +269,7 @@ class SideloadingMainAppMixin:                                                  
 
     def on_app_started(self):
         """ initialize and start shaders after kivy app, window and widget root got initialized. """
-        super_method: Optional[Callable] = getattr(super(), 'on_app_started', None)
+        super_method: Callable | None = getattr(super(), 'on_app_started', None)
         if callable(super_method):
             super_method()                      # pylint: disable=not-callable
 
@@ -282,7 +283,7 @@ class SideloadingMainAppMixin:                                                  
         :param _event_kwargs:   unused event kwargs.
         :return:                True to confirm the debug level change.
         """
-        super_method: Optional[Callable] = getattr(super(), 'on_debug_level_change', None)
+        super_method: Callable | None = getattr(super(), 'on_debug_level_change', None)
         if not callable(super_method) or super_method(level_name, _event_kwargs):   # pylint: disable=not-callable
             self.vpo(f"SideloadingMainAppMixin.on_debug_level_change to {level_name}")
             self.sideloading_app.set_option('debug_level', self.get_option('debug_level'))
@@ -296,6 +297,7 @@ class SideloadingMainAppMixin:                                                  
         :param chooser_popup:   file chooser popup/container widget.
         """
         pre = "SideloadingMainAppMixin.on_file_chooser_submit: "
+        # noinspection PyStringConversionWithoutDunderMethod
         self.vpo(f"{pre}file={file_path}; {chooser_popup=}")
 
         if chooser_popup.submit_to != 'sideloading_file_mask':
