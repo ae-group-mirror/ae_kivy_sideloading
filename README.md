@@ -1,12 +1,12 @@
-<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project ae.ae v0.3.104 -->
-<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project aedev.namespace_root_tpls v0.3.31 -->
-# kivy_sideloading 0.3.29
+<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project ae.ae v0.3.108 -->
+<!-- THIS FILE IS EXCLUSIVELY MAINTAINED by the project aedev.namespace_root_tpls v0.3.32 -->
+# kivy_sideloading 0.3.30
 
 [![GitLab develop](https://img.shields.io/gitlab/pipeline/ae-group/ae_kivy_sideloading/develop?logo=python)](
     https://gitlab.com/ae-group/ae_kivy_sideloading)
 [![LatestPyPIrelease](
-    https://img.shields.io/gitlab/pipeline/ae-group/ae_kivy_sideloading/release0.3.29?logo=python)](
-    https://gitlab.com/ae-group/ae_kivy_sideloading/-/tree/release0.3.29)
+    https://img.shields.io/gitlab/pipeline/ae-group/ae_kivy_sideloading/release0.3.30?logo=python)](
+    https://gitlab.com/ae-group/ae_kivy_sideloading/-/tree/release0.3.30)
 [![PyPIVersions](https://img.shields.io/pypi/v/ae_kivy_sideloading)](
     https://pypi.org/project/ae-kivy-sideloading/#history)
 
