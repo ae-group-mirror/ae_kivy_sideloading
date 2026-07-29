@@ -104,7 +104,7 @@ sideloading server life cycle
 to activate the sideloading server to offer a different file, specify the path (or glob file mask) of the file to be
 offered/available via sideloading in the :attr:`~SideloadingMainAppMixin.sideloading_file_mask` attribute and then call
 the method :meth:`~SideloadingMainAppMixin.on_sideloading_server_start`. this method will check if the specified file
- exists, and if yes, then it will start the sideloading server. if you specify a file mask instead of a concrete
+exists, and if yes, then it will start the sideloading server. if you specify a file mask instead of a concrete
 file path, then this method will check if there exists exactly one file matching the file mask.
 
 after the start of the sideloading server, the :attr:`~SideloadingMainAppMixin.sideloading_file_ext` attribute will
@@ -140,7 +140,7 @@ import ae.kivy_iterable_displayer                                               
 import ae.kivy_qr_displayer                                                                 # type: ignore # noqa: F401
 
 
-__version__ = '0.3.29'
+__version__ = '0.3.30'
 
 
 register_package_images()                                                                   # load package images

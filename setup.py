@@ -1,4 +1,4 @@
-# THIS FILE IS EXCLUSIVELY MAINTAINED by the project aedev.project_tpls v0.3.82
+# THIS FILE IS EXCLUSIVELY MAINTAINED by the project aedev.project_tpls v0.3.90
 """ setup of ae namespace package portion kivy_sideloading: kivy mixin and widgets to integrate a sideloading server in your app. """
 import pathlib
 import sys
@@ -95,7 +95,7 @@ setup_kwargs: dict[str, Any] = {
     },
     'python_requires': '>=3.12',
     'url': 'https://gitlab.com/ae-group/ae_kivy_sideloading',
-    'version': '0.3.29',
+    'version': '0.3.30',
     'zip_safe': False,
 }
 
